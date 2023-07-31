@@ -1,0 +1,25 @@
+# Client mode
+client
+
+# OpenVPN protocol and port (must match server)
+proto udp
+remote 192.168.2.1 1194
+
+# Your local network's gateway (change this to match your gateway's IP address)
+route-gateway 192.168.1.1
+
+# Set the route to the VPN server's subnet via the VPN tunnel
+route 192.168.3.0 255.255.255.0 vpn_gateway
+
+# Certificate and key paths
+ca /path/to/ca.crt
+cert /path/to/client.crt
+key /path/to/client.key
+tls-auth /path/to/ta.key 1
+
+# Enable compression if the server uses it (optional)
+comp-lzo
+
+# Set log and verb levels for troubleshooting (optional)
+log /path/to/openvpn.log
+verb 3
