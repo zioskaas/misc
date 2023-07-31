@@ -1,0 +1,36 @@
+# Specify the OpenVPN mode
+mode server
+
+# Server's local IP and subnet (change accordingly)
+server 10.8.0.0 255.255.255.0
+
+# Push the routes to the clients
+push "route 192.168.1.0 255.255.255.0"
+push "route 192.168.3.0 255.255.255.0"
+
+# Certificate and key paths
+ca /path/to/ca.crt
+cert /path/to/server.crt
+key /path/to/server.key
+dh /path/to/dh.pem
+
+# Enable TLS and use Diffie-Hellman parameters
+tls-server
+tls-auth /path/to/ta.key 0
+
+# Use UDP or TCP, choose one (change port if needed)
+proto udp
+port 1194
+
+# Allow traffic to be forwarded between clients
+client-to-client
+
+# Use compression if desired (optional)
+comp-lzo
+
+# Enable keepalive to maintain the connection
+keepalive 10 120
+
+# Set log and verb levels for troubleshooting (optional)
+log /path/to/openvpn.log
+verb 3
