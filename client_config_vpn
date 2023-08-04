@@ -1,25 +1,38 @@
-# Client mode
+# Specify that this is a client configuration
 client
 
-# OpenVPN protocol and port (must match server)
+# Define a TUN interface
+dev tun
+
+# Use UDP protocol; should match the server's protocol
 proto udp
-remote 192.168.2.1 1194
 
-# Your local network's gateway (change this to match your gateway's IP address)
-route-gateway 192.168.1.1
+# OpenVPN server address and port
+remote 210.10.10.2 1194
 
-# Set the route to the VPN server's subnet via the VPN tunnel
-route 192.168.3.0 255.255.255.0 vpn_gateway
+# Keep trying to resolve the server host name if initial resolution fails
+resolv-retry infinite
 
-# Certificate and key paths
-ca /path/to/ca.crt
-cert /path/to/client.crt
-key /path/to/client.key
-tls-auth /path/to/ta.key 1
+# Do not bind to a specific local port
+nobind
 
-# Enable compression if the server uses it (optional)
-comp-lzo
+# Persist keys and tunnel through restarts
+persist-key
+persist-tun
+# Certificate Authority file
+ca ca.crt
 
-# Set log and verb levels for troubleshooting (optional)
-log /path/to/openvpn.log
+# Client's Certificate file
+cert client1.crt
+
+# Client's Private Key file
+key client1.key
+
+# TLS Authentication file for HMAC signature (1 = client role)
+tls-auth ta.key 1
+
+# Data encryption cipher
+cipher AES-256-CBC
+
+# Log verbosity level
 verb 3
