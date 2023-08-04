@@ -1,36 +1,38 @@
-# Specify the OpenVPN mode
-mode server
-
-# Server's local IP and subnet (change accordingly)
-server 10.8.0.0 255.255.255.0
-
-# Push the routes to the clients
-push "route 192.168.1.0 255.255.255.0"
-push "route 192.168.3.0 255.255.255.0"
-
-# Certificate and key paths
-ca /path/to/ca.crt
-cert /path/to/server.crt
-key /path/to/server.key
-dh /path/to/dh.pem
-
-# Enable TLS and use Diffie-Hellman parameters
-tls-server
-tls-auth /path/to/ta.key 0
-
-# Use UDP or TCP, choose one (change port if needed)
-proto udp
+# Specify the port number to listen to (default is 1194 for OpenVPN)
 port 1194
-
-# Allow traffic to be forwarded between clients
+# UDP protocol for better performance; you can use TCP if needed
+proto udp
+# Define a TUN interface
+dev tun
+# Certificate Authority file
+ca ca.crt
+# Server's Certificate file
+cert server.crt
+# Server's Private Key file
+key server.key
+# Diffie-Hellman parameters file
+dh dh.pem
+# VPN subnet for clients
+server 10.8.0.0 255.255.255.0
+# Route to the 192.168.2.0/24 network
+push "route 192.168.2.0 255.255.255.0"
+# Route to the 192.168.5.0/24 network
+push "route 192.168.5.0 255.255.255.0"
+# Allow communication between clients
 client-to-client
-
-# Use compression if desired (optional)
-comp-lzo
-
-# Enable keepalive to maintain the connection
+# Send keepalive messages to detect connection failure
 keepalive 10 120
-
-# Set log and verb levels for troubleshooting (optional)
-log /path/to/openvpn.log
+# TLS Authentication file for HMAC signature (0 = server role)
+tls-auth ta.key 0
+# Data encryption cipher
+cipher AES-256-CBC
+# Drop privileges for security (user and group may vary based on OS)
+user nobody
+group nogroup
+# Persist keys and tunnel through restarts
+persist-key
+persist-tun
+# Log file for connection status
+status openvpn-status.log
+# Log verbosity level
 verb 3
