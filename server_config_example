@@ -53,3 +53,11 @@ status openvpn-status.log
 
 # Log verbosity level
 verb 3
+
+
+
+
+# pool config
+
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
