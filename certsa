@@ -1,0 +1,47 @@
+# configure easy-rsa
+nano vars
+--start--
+export KEY_COUNTRY="US"
+export KEY_PROVINCE="CA"
+export KEY_CITY="SanFrancisco"
+export KEY_ORG="MyOrganization"
+export KEY_EMAIL="admin@myorganization.com"
+export KEY_OU="MyOrganizationalUnit"
+--end--
+
+# initialise PKI
+source vars
+./clean-all
+./build-ca
+
+
+# build server cert
+./build-key-server server
+
+# generate DH paras
+./build-dh
+
+# gen client certs and keys
+./build-key client1
+./build-key client2
+
+# generate tls Auth key
+openvpn --genkey --secret keys/ta.key
+
+
+
+#xfer to server/client
+For clients:
+
+ca.crt
+client1.crt
+client1.key
+ta.key
+
+#server crypt
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+
+#client certs
