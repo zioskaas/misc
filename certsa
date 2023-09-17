@@ -67,7 +67,7 @@ def curl_and_save(url, user_agent):
                 print(f"{RED}Invalid choice. Please try again.{RESET}")
         
         else:
-            print(f"\nOutput saved for {url} (HTTP status code: {http_code})\n")
+            print(f"{GREEN}\n[*] Collected {url} (HTTP status code: {http_code}){RESET}\n")
             os.system(f"rm -rf http_code.txt") 
             time.sleep(5) # waits 5 seconds after collecting a file
             break
