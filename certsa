@@ -1,47 +1,79 @@
-# configure easy-rsa
-nano vars
---start--
-export KEY_COUNTRY="US"
-export KEY_PROVINCE="CA"
-export KEY_CITY="SanFrancisco"
-export KEY_ORG="MyOrganization"
-export KEY_EMAIL="admin@myorganization.com"
-export KEY_OU="MyOrganizationalUnit"
---end--
+import os
+import time
 
-# initialise PKI
-source vars
-./clean-all
-./build-ca
+# define terminal colours
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+
+def read_urls(filename):
+    with open(filename, 'r') as f:
+        return [line.strip() for line in f]
+
+def main():
+    domain = "127.0.0.1/" # CHANGE ME
+    user_agent = "This works!" # CHANGE ME
+    urls = read_urls('urls.txt')
+    index = 0
+
+    print(f"[*] Domain: {domain}\n[*] user-agent: {user_agent}\n")
+
+    while index < len(urls):
+        global url_file #GLOBAL VARIABLE
+        url_file = urls[index] # GLOBAL VARIABLE FOR CURRENT URL USED FOR FILENAME ETC..
+        full_url = f"{domain}{urls[index]}"
+        print(f"[*] Target URL: {full_url}\n")
+        
+        choice = input(f"Choose an option: \n1. Collect this item\n2. Exit the program\n3. Collect the remainder of the items\n\n{GREEN}[*] Input:{RESET} ").strip()
+
+        if choice == '1':
+            curl_and_save(full_url, user_agent)
+            index += 1
+        elif choice == '2':
+            break
+        elif choice == '3':
+            for url in urls[index:]:
+                curl_and_save(f"{domain}{url}", user_agent)
+                index += 1
+        else:
+            print("Invalid choice. Please try again.")
+
+# function for curling
+
+def curl_and_save(url, user_agent):
+    command = f'curl --create-dirs -o "{url_file}" -A "{user_agent}" -w "%{{http_code}}" {url} > http_code.txt' 
+    while True:
+        result = os.system(command)
+        if os.path.exists('http_code.txt'):
+            with open('http_code.txt', 'r') as f:
+                http_code = int(f.read().strip())
+        else:
+            http_code = None
+
+        if http_code != 200: 
+            print(f"\n{RED}[*] Received {http_code} status code for {url}\n {RESET}")
+            os.system(f"rm -rf {url_file}") 
+            os.system(f"rm -rf http_code.txt") 
+            choice = input(f"Choose an option: \n1. Try again\n2. Exit the program\n3. Continue to the next item\n\n{GREEN}[*] Input:{RESET} ").strip()
 
 
-# build server cert
-./build-key-server server
+            if choice == '1':
+                continue
+            elif choice == '2':
+                exit(0)
+            elif choice == '3':
+                break
+            else:
+                print(f"{RED}Invalid choice. Please try again.{RESET}")
+        
+        else:
+            print(f"\nOutput saved for {url} (HTTP status code: {http_code})\n")
+            os.system(f"rm -rf http_code.txt") 
+            time.sleep(5) # waits 5 seconds after collecting a file
+            break
+        
+        
 
-# generate DH paras
-./build-dh
 
-# gen client certs and keys
-./build-key client1
-./build-key client2
-
-# generate tls Auth key
-openvpn --genkey --secret keys/ta.key
-
-
-
-#xfer to server/client
-For clients:
-
-ca.crt
-client1.crt
-client1.key
-ta.key
-
-#server crypt
-ca ca.crt
-cert server.crt
-key server.key
-dh dh.pem
-
-#client certs
+if __name__ == "__main__":
+    main()
