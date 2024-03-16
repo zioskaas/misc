@@ -1,0 +1,17 @@
+#Filtering
+ip.dst == <IP>
+ip.src == <IP>
+ip.addr == <IP>
+
+ip.addr == <IP> or ip.addr == <IP>
+
+# merging
+mergecap -w <OUTPUT NAME> file1.pcap file2.pcap file3.pcap
+
+# find DNS entries
+tshark -r <FILE> -Y "dns.flags.response == 0" -T fields -e dns.qry.name | sort | uniq
+tshark -r <FILE> -Y "dns.flags.response == 1" -T fields -e dns.qry.name -e dns.a
+
+# Misc
+VIEW > time display format >  UTC Date / tod
+Edit > find packet > string
