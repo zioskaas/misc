@@ -15,3 +15,10 @@ tshark -r <FILE> -Y "dns.flags.response == 1" -T fields -e dns.qry.name -e dns.a
 # Misc
 VIEW > time display format >  UTC Date / tod
 Edit > find packet > string
+
+
+tshark -r original.pcap -Y "frame contains bbc" -T fields -e frame.number
+
+tshark -r original.pcap -Y "frame contains bbc" -T fields -e frame.number
+tshark -r original.pcap -Y "!(data-text-lines contains 'bbc')" -w output.pcap
+tshark -r original.pcap -Y "!(frame contains \"bbc\")" -w output.pcap
