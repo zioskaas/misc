@@ -1,0 +1,30 @@
+# Check if the user provided a regex pattern as an argument
+if ($args.Length -eq 0) {
+    Write-Host "Usage: powershell.exe .\SearchFiles.ps1 'regex_pattern'"
+    exit
+}
+
+# Store the regex pattern provided in the first argument
+$regexPattern = $args[0]
+
+# Get all files in the current directory and its subdirectories
+$files = Get-ChildItem -Recurse -File
+
+# Search each file for the regex pattern
+foreach ($file in $files) {
+    # Try to read the file content
+    try {
+        $content = Get-Content $file.FullName -ErrorAction Stop
+    } catch {
+        Write-Host "Failed to read file: $file.FullName"
+        continue
+    }
+
+    # Check each line of the content for matches to the regex pattern
+    foreach ($line in $content) {
+        if ($line -match $regexPattern) {
+            Write-Host "Match found in file: $file.FullName"
+            Write-Host "Matching line: $line"
+        }
+    }
+}
