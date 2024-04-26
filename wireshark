@@ -1,6 +1,3 @@
-#
-openssl rsa -in original.key -out nopass.key
-
 
 #Filtering
 ip.dst == <IP>
