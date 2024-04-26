@@ -1,6 +1,9 @@
-# This is a test
+# ssl
+openssl rsa -in original.key -out nopass.key
+
+# import task file (xml)
+Register-ScheduledTask -Xml (Get-Content 'C:\Path\To\Task.xml' -Raw) -TaskName "MyImportedTask"
+Register-ScheduledTask -Xml (Get-Content 'C:\Path\To\Task.xml' -Raw) -TaskName "MyImportedTask" -User "DOMAIN\User" -Password "password"
+Get-ScheduledTask -TaskName "MyImportedTask"
 
 
-```
-this works
-```
